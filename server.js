@@ -3,10 +3,12 @@ const cors = require('cors');
 
 const app = express();
 
-var corOptions = {
-    origin: 'https://localhost:5001'
-};
+const corOptions = { origin: 'https://localhost:5001' };
 
+// routers
+const router = require('./src/routes/userRouter.js');
+
+app.use('/api/user', router);
 
 // middleware
 app.use(cors(corOptions));

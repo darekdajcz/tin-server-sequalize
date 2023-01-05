@@ -1,7 +1,9 @@
 module.exports = (sequalize, DataTypes) => {
 
-    let User;
-    User = sequelize.define('user', {
+    console.log('sequalize')
+    console.log(sequalize)
+    console.log('sequalize')
+    const User = sequelize.define('user', {
         username: {
             type: DataTypes.STRING,
             allowNull: false
@@ -18,7 +20,7 @@ module.exports = (sequalize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false
         }
-    });
+    }, { freezeTableName: true });
 
     return User;
 };

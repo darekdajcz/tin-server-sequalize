@@ -1,25 +1,19 @@
+const { Sequelize } = require('sequelize');
+const { DataTypes } = require('sequelize');
 const dbConfig = require('../config/dbConfig');
 
-const { Sequalize, DataTypes } = require('sequelize');
-
 // new Sequelize('database', 'username', 'password', { ...
-const sequalize = new Sequalize(
+let sequalize = new Sequelize(
     dbConfig.DB,
     dbConfig.USER,
     dbConfig.PASSWORD,
     {
         host: dbConfig.HOST,
         dialect: dbConfig.dialect,
-        port: dbConfig.PORT,
-        operatorsAliases: false,
-        pool: {
-            max: dbConfig.pool.max,
-            min: dbConfig.pool.min,
-            acquire: dbConfig.pool.acquire,
-            idle: dbConfig.pool.idle
-        }
+        port: dbConfig.PORT
     }
 );
+const x = Sequelize;
 
 sequalize.authenticate()
     .then(() => console.log('Connected..'))
@@ -27,10 +21,12 @@ sequalize.authenticate()
 
 const db = {};
 
-db.Sequelize = Sequalize;
+db.Sequelize = x;
 db.sequalize = sequalize;
 
-db.users = require('./userModel.js')(sequalize, DataTypes);
+console.log(sequalize)
+
+db.users = require('./userModel.js')(Sequelize, DataTypes);
 
 db.sequalize.sync({ force: false })
     .then(() => console.log('Re-sync done!'));

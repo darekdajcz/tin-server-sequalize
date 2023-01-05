@@ -11,10 +11,18 @@
   "author": "Dariusz Dajcz",
   "license": "ISC",
   "dependencies": {
+    "@sequelize/core": "^7.0.0-alpha.10",
     "cors": "^2.8.5",
+    "es6": "^0.0.7",
     "express": "^4.18.2",
+    "ibm_db": "^3.1.0",
+    "mariadb": "^3.0.2",
     "mysql2": "^2.3.3",
     "nodemon": "^2.0.20",
-    "sequelize": "^6.28.0"
+    "pg": "^8.8.0",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.28.0",
+    "sqlite3": "^5.1.4",
+    "tedious": "^15.1.2"
   }
 }
