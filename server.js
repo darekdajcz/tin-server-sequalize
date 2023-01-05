@@ -7,7 +7,6 @@ const corOptions = { origin: 'https://localhost:5001' };
 
 // routers
 const router = require('./src/routes/userRouter.js');
-
 app.use('/api/user', router);
 
 // middleware
