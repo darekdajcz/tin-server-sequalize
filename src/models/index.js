@@ -1,0 +1,22 @@
+const dbConfig = require('../config/dbConfig');
+
+const { Sequalize, DataTypes } = require('sequelize');
+
+// new Sequelize('database', 'username', 'password', { ...
+const sequalize = new Sequalize(
+    dbConfig.DB,
+    dbConfig.USER,
+    dbConfig.PASSWORD,
+    {
+        host: dbConfig.HOST,
+        dialect:  dbConfig.dialect,
+        port: dbConfig.PORT,
+        operatorsAliases: false,
+        pool: {
+            max: dbConfig.pool.max,
+            min: dbConfig.pool.min,
+            acquire: dbConfig.pool.acquire,
+            idle: dbConfig.pool.idle
+        }
+    }
+)
