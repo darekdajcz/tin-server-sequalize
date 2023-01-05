@@ -30,14 +30,26 @@ const getAllUsers = async (req, res) => {
 const getUser = async (req, res) => {
 
     let id = req.params.id;
-    let user = await User.findOne({ where: id });
+    let user = await User.findOne({ where: { id } });
     res.status(200).send(user);
 };
 
-// 3. update user
+// 4. update user
 const updateUser = async (req, res) => {
 
     let id = req.body.id;
-    const user = await User.update(req.body, { where: id });
+    const user = await User.update(req.body, { where: { id } });
     res.status(200).send(user);
+};
+
+// 6. delete user
+const deleteUser = async (req, res) => {
+
+    let id = req.body.id;
+    await User.destroy({ where: { id } });
+    res.status(200).send('User deleted!');
+};
+
+module.exports = {
+    addUser, getAllUsers, getUser, updateUser, deleteUser
 };
