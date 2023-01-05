@@ -33,4 +33,6 @@ db.sequalize = sequalize;
 db.products = require('./userModel.js')(sequalize, DataTypes);
 
 db.sequalize.sync({ force: false })
-    .then(()=> console.log('Re-sync done!'));
+    .then(() => console.log('Re-sync done!'));
+
+module.exports = db;
