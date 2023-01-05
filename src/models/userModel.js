@@ -1,8 +1,5 @@
-module.exports = (sequalize, DataTypes) => {
+module.exports = (sequelize, DataTypes) => {
 
-    console.log('sequalize')
-    console.log(sequalize)
-    console.log('sequalize')
     const User = sequelize.define('user', {
         username: {
             type: DataTypes.STRING,
