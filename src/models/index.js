@@ -9,7 +9,7 @@ const sequalize = new Sequalize(
     dbConfig.PASSWORD,
     {
         host: dbConfig.HOST,
-        dialect:  dbConfig.dialect,
+        dialect: dbConfig.dialect,
         port: dbConfig.PORT,
         operatorsAliases: false,
         pool: {
@@ -19,4 +19,18 @@ const sequalize = new Sequalize(
             idle: dbConfig.pool.idle
         }
     }
-)
+);
+
+sequalize.authenticate()
+    .then(() => console.log('Connected..'))
+    .catch((err) => console.log(`Error ${err}`));
+
+const db = {};
+
+db.Sequelize = Sequalize;
+db.sequalize = sequalize;
+
+db.products = require('./userModel.js')(sequalize, DataTypes);
+
+db.sequalize.sync({ force: false })
+    .then(()=> console.log('Re-sync done!'));
