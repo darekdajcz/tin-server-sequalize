@@ -20,7 +20,6 @@ const addUser = async (req, res) => {
 
 // 2. get all users
 const getAllUsers = async (req, res) => {
-    console.log('xx')
     let users = await User.findAll({
         attributes: ['id', 'username', 'password', 'email', 'role']
     });
