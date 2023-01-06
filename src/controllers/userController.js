@@ -1,5 +1,5 @@
 const db = require('./../models');
-const { jwt } = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 const env = require('../config/env.js');
 
 // create main Model
@@ -22,6 +22,7 @@ const addUser = async (req, res) => {
 
 // 2. get all users
 const getAllUsers = async (req, res) => {
+    console.log(req.headers)
     let users = await User.findAll({
         attributes: ['id', 'username', 'password', 'email', 'role']
     });
@@ -32,19 +33,20 @@ const getAllUsers = async (req, res) => {
 const userLogin = async (req, res) => {
 
     // Authenticate User
-    console.log('xx');
-    console.log(req.body);
 
-    // const username = req?.body.username;
-    // const password = req?.body.password;
-    // const user = { name: username };
+    const username = req.body.username;
+    // const password = req.body.password;
+    const user = { name: username };
 
 
-    // const accessToken = jwt.sign(user, env.ACCESS_TOKEN_SECRET);
-    // res.json({ accessToken });
+    const accessToken = jwt.sign(user, env.ACCESS_TOKEN_SECRET, {
+        expiresIn: 604800 // 1 week
+    });
+    res.json({ accessToken });
 
-    let user = await User.findOne({ where: { username: 'darekbiszkopt' } });
-    res.status(200).send(user);
+    console.log(accessToken)
+    // let user = await User.findOne({ where: { username, password } });
+    // res.status(200).send(user);
 };
 
 // 4. update user
