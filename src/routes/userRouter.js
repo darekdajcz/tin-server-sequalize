@@ -1,5 +1,5 @@
 const userController = require('../controllers/userController');
-
+cors = require('cors');
 const userRouter = require('express').Router();
 
 userRouter.post('/add-user', userController.addUser);

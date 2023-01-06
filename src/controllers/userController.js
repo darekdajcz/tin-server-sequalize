@@ -1,4 +1,3 @@
-require('dotenv').config
 const db = require('./../models');
 const { jwt } = require('jsonwebtoken');
 const env = require('../config/env.js');
@@ -33,15 +32,18 @@ const getAllUsers = async (req, res) => {
 const userLogin = async (req, res) => {
 
     // Authenticate User
+    console.log('xx');
+    console.log(req.body);
 
-    const username = req.body.username;
-    const password = req.body.password;
-    const user = { name: username };
+    // const username = req?.body.username;
+    // const password = req?.body.password;
+    // const user = { name: username };
 
-    const accessToken = jwt.sign(user, env.ACCESS_TOKEN_SECRET);
-    res.json({ accessToken });
 
-    // let user = await User.findOne({ where: { username, password } });
+    // const accessToken = jwt.sign(user, env.ACCESS_TOKEN_SECRET);
+    // res.json({ accessToken });
+
+    let user = await User.findOne({ where: { username: 'darekbiszkopt' } });
     res.status(200).send(user);
 };
 
