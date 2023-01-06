@@ -75,7 +75,8 @@ const getAllUsers = async (req, res) => {
 
 // 3. get single user
 const userLogin = async (req, res) => {
-
+    console.log('xx');
+    console.log(req);
     try {
         // Authenticate User
         const { username, password } = req.body;

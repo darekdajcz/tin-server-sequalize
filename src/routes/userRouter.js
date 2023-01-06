@@ -10,7 +10,7 @@ userRouter.post('/login', userController.userLogin);
 // refresh token
 userRouter.post('/refresh-token', userController.refreshToken);
 
-userRouter.get('/all-users', auth.authenticateToken, userController.getAllUsers);
+userRouter.get('/all-users', userController.getAllUsers);
 userRouter.put('/:id', auth.authenticateToken, userController.updateUser);
 userRouter.delete('/:id', userController.deleteUser);
 userRouter.post('/logout', userController.logoutUser);
