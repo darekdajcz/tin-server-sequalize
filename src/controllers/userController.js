@@ -1,16 +1,13 @@
 const db = require('./../models');
-const jwt = require('jsonwebtoken');
-const env = require('../config/env.js');
-const generateAccessToken = require('../routes/userRouter'
- );
+const auth = require('../auth/auth');
 
 // create main Model
 const User = db.users;
 
 //main work
 
-// 1. create User
-const addUser = async (req, res) => {
+// 1. register User
+const registerUser = async (req, res) => {
     let data = {
         username: req.body.username,
         password: req.body.password,
@@ -24,7 +21,7 @@ const addUser = async (req, res) => {
 
 // 2. get all users
 const getAllUsers = async (req, res) => {
-    console.log(req.headers)
+    console.log(req.headers);
     let users = await User.findAll({
         attributes: ['id', 'username', 'password', 'email', 'role']
     });
@@ -34,21 +31,25 @@ const getAllUsers = async (req, res) => {
 // 3. get single user
 const userLogin = async (req, res) => {
 
-    // Authenticate User
+    try {
+        // Authenticate User
+        const { username, password } = req.body;
 
-    const username = req.body.username;
-    // const password = req.body.password;
-    const user = { name: username };
+        if (!(username && password)) {
+            res.status(400).send('All input is required');
+        }
 
+        const user = await User.findOne({ where: { username } });
+        if (user && await password === user.password) {
+            const accessToken = auth.generateAccessToken(user);
+            res.status(200).json({ accessToken });
+        }
 
-    const accessToken = jwt.sign(user, env.ACCESS_TOKEN_SECRET, {
-        expiresIn: 604800 // 1 week
-    });
-    res.json({ accessToken });
+        res.status(400).send('Invalid Credentials');
+    } catch (err) {
+        console.log(err);
+    }
 
-    console.log(accessToken)
-    // let user = await User.findOne({ where: { username, password } });
-    // res.status(200).send(user);
 };
 
 // 4. update user
@@ -68,5 +69,5 @@ const deleteUser = async (req, res) => {
 };
 
 module.exports = {
-    addUser, getAllUsers, userLogin, updateUser, deleteUser
+    registerUser, getAllUsers, userLogin, updateUser, deleteUser
 };

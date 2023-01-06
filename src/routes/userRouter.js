@@ -5,13 +5,15 @@ const env = require('../config/env.js');
 
 cors = require('cors');
 
-userRouter.post('/add-user', userController.addUser);
-userRouter.get('/all-users', authenticateToken, userController.getAllUsers);
+userRouter.post('/register', authenticateToken, userController.registerUser);
+userRouter.get('/all-users',authenticateToken, userController.getAllUsers);
 // login
 userRouter.post('/login', userController.userLogin);
 
 userRouter.put('/:id', userController.updateUser);
 userRouter.delete('/:id', userController.deleteUser);
+
+// Authenticate User
 
 function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];
@@ -29,12 +31,5 @@ function authenticateToken(req, res, next) {
     });
 }
 
-// Authenticate User
+module.exports = userRouter;
 
-function generateAccessToken(user) {
-    return jwt.sign(user, env.ACCESS_TOKEN_SECRET, { expiresIn: '15s' }, () => '');
-}
-
-module.exports = {
-    userRouter, generateAccessToken
-};
