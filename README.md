@@ -1,1 +1,1 @@
-# tin-server-equalize
+# tin-server-sequalize
