@@ -1,4 +1,5 @@
 const db = require('./../models');
+const jwt = require('jsonwebtoken')
 
 // create main Model
 const User = db.users;
@@ -27,10 +28,13 @@ const getAllUsers = async (req, res) => {
 };
 
 // 3. get single user
-const getUser = async (req, res) => {
+const userLogin = async (req, res) => {
 
-    let id = req.params.id;
-    let user = await User.findOne({ where: { id } });
+    // Authenticate User
+
+    const username = req.body.username;
+    const password = req.body.password;
+    let user = await User.findOne({ where: { username, password } });
     res.status(200).send(user);
 };
 
@@ -51,5 +55,5 @@ const deleteUser = async (req, res) => {
 };
 
 module.exports = {
-    addUser, getAllUsers, getUser, updateUser, deleteUser
+    addUser, getAllUsers, userLogin, updateUser, deleteUser
 };
