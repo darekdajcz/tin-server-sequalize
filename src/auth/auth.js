@@ -3,14 +3,14 @@ const env = require('../config/env');
 
 function generateAccessToken(user) {
     return jwt.sign(user.toJSON(), env.ACCESS_TOKEN_SECRET, {
-        expiresIn: '900s'
-    });
+        expiresIn: '20s'
+    }, null);
 }
 
 function generateRefreshToken(user) {
     return jwt.sign(user.toJSON(), env.REFRESH_TOKEN_SECRET, {
         expiresIn: '24h'
-    });
+    }, null);
 }
 
 // Authenticate User
@@ -24,7 +24,8 @@ function authenticateToken(req, res, next) {
     // console.log(tokenJson.username);  GETTING USERNAME
 
     if (token === null) {
-        return res.sendStatus(401);
+        return res.status(401).send({ error: { status: 401, message: 'unauthorized' } });
+
     }
 
     jwt.verify(token, env.ACCESS_TOKEN_SECRET, {}, (err, user) => {

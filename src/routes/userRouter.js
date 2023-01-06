@@ -12,7 +12,8 @@ userRouter.post('/refresh-token', userController.refreshToken);
 
 userRouter.get('/all-users', auth.authenticateToken, userController.getAllUsers);
 userRouter.put('/:id', auth.authenticateToken, userController.updateUser);
-userRouter.delete('/:id', auth.authenticateToken, userController.deleteUser);
+userRouter.delete('/:id', userController.deleteUser);
+userRouter.post('/logout', userController.logoutUser);
 
 module.exports = userRouter;
 
