@@ -4,6 +4,7 @@ const cors = require('cors');
 const bodyParser = require('express');
 const app = express();
 const corOptions = { origin: 'https://localhost:5001' };
+const auth = require('./src/auth/auth');
 
 // middleware
 app.use(cors(corOptions));

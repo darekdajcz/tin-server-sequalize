@@ -29,6 +29,7 @@ db.sequelize = sequelize;
 
 
 db.users = require('./userModel.js')(sequelize, DataTypes);
+db.users = require('./userStoreTokens.js')(sequelize, DataTypes);
 
 db.sequelize.sync({ force: false })
     .then(() => console.log('Re-sync done!'));

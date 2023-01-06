@@ -1,41 +1,18 @@
 const userController = require('../controllers/userController');
 const userRouter = require('express').Router();
-const jwt = require('jsonwebtoken');
-const env = require('../config/env.js');
-
+const auth = require('./../auth/auth.js');
 cors = require('cors');
 
-userRouter.post('/register', authenticateToken, userController.registerUser);
-userRouter.get('/all-users', authenticateToken, userController.getAllUsers);
+// register
+userRouter.post('/register', auth.authenticateToken, userController.registerUser);
 // login
 userRouter.post('/login', userController.userLogin);
+// refresh token
+userRouter.post('/refresh-token', userController.refreshToken);
 
-userRouter.put('/:id', userController.updateUser);
-userRouter.delete('/:id', userController.deleteUser);
-
-// Authenticate User
-
-function authenticateToken(req, res, next) {
-
-
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-
-    // const tokenJson = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
-    // console.log(tokenJson.username);  GETTING USERNAME
-
-    if (token === null) {
-        return res.sendStatus(401);
-    }
-
-    jwt.verify(token, env.ACCESS_TOKEN_SECRET, {}, (err, user) => {
-        if (err) {
-            return res.sendStatus(403);
-        }
-        req.user = user;
-        next();
-    });
-}
+userRouter.get('/all-users', auth.authenticateToken, userController.getAllUsers);
+userRouter.put('/:id', auth.authenticateToken, userController.updateUser);
+userRouter.delete('/:id', auth.authenticateToken, userController.deleteUser);
 
 module.exports = userRouter;
 
