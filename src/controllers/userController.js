@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 
 // create main Model
 const User = db.users;
+const Token = db.tokens;
 
 //main work
 
@@ -65,6 +66,7 @@ const getAllUsers = async (req, res) => {
 // 3. get single user
 const userLogin = async (req, res) => {
 
+    let updateBody;
     try {
         // Authenticate User
         const { username, password } = req.body;
@@ -76,7 +78,24 @@ const userLogin = async (req, res) => {
         const user = await User.findOne({ where: { username } });
         if (user && await bcrypt.compare(password, user.password)) {
             const accessToken = auth.generateAccessToken(user);
-            res.status(200).json({ accessToken });
+            const refreshTokenNew = auth.generateRefreshToken(user);
+            const token = await Token.findOne({ where: { userId: user.id } });
+
+            if (token) {
+                // update token
+                const refreshToken = token.refreshToken.get();
+                refreshToken.push(refreshTokenNew);
+                updateBody = { accessToken, refreshToken };
+                const token = await Token.update(updateBody, { where: { userId: user.id } });
+                console.log(token);
+            } else {
+                const data = { userId: user.id, accessToken, refreshToken };
+                // create token
+                const token = await Token.create(data);
+                console.log(token);
+            }
+
+            res.status(200).json({ user, token });
         }
 
         res.status(400).send('Invalid Credentials');

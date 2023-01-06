@@ -4,10 +4,10 @@ module.exports = (sequelize, DataTypes) => {
         userId: {
             type: DataTypes.STRING
         }, accessToken: {
-            type: DataTypes.STRING
+            type: DataTypes.STRING(1000)
         },
         refreshToken: {
-            type: DataTypes.STRING
+            type: DataTypes.STRING(3000)
         }
     }, { freezeTableName: true });
 };
