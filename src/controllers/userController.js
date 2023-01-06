@@ -10,15 +10,17 @@ const Token = db.tokens;
 
 // 0. refresh Token
 const refreshToken = async (req, res) => {
+
     const { userId, refreshToken } = req.body;
-    console.log(req.body)
     const user = await User.findOne({ where: { id: userId } });
     const token = await Token.findOne({ where: { userId } });
 
     if (token.refreshToken === refreshToken) {
         const accessToken = auth.generateAccessToken(user);
         const refreshToken = auth.generateRefreshToken(user);
+
         await Token.update({ accessToken, refreshToken }, { where: { userId: user.id } });
+
         return res.status(201).json({ token: { accessToken, refreshToken } });
     }
     res.status(401).send({ error: { status: 401, message: 'logged out' } });
@@ -28,6 +30,7 @@ const refreshToken = async (req, res) => {
 const registerUser = async (req, res) => {
     try {
         const { username, email, password, role } = req.body;
+
         // Validate user input
         if (!(email && password && username && role)) {
             return res.status(400).send('All input is required');
@@ -58,46 +61,40 @@ const registerUser = async (req, res) => {
     } catch (err) {
         console.log(err);
     }
-
 };
 
 // 2. get all users
 const getAllUsers = async (req, res) => {
-    console.log(req.headers);
-    let users = await User.findAll({
+
+    const users = await User.findAll({
         attributes: ['id', 'username', 'email', 'role']
     });
+
     res.status(200).send(users);
 };
 
 // 3. get single user
 const userLogin = async (req, res) => {
 
-    let updateBody;
     try {
         // Authenticate User
         const { username, password } = req.body;
 
         if (!(username && password)) {
-            res.status(400).send('All input is required');
+            return res.status(400).send('All input is required');
         }
 
         const user = await User.findOne({ where: { username } });
+
         if (user && await bcrypt.compare(password, user.password)) {
             const accessToken = auth.generateAccessToken(user);
             const refreshTokenNew = auth.generateRefreshToken(user);
             const data = { userId: user.id, accessToken, refreshToken: refreshTokenNew };
             const token = await Token.findOne({ where: { userId: user.id } });
 
-            if (token) {
-                // update token
-                const token = await Token.update(data, { where: { userId: user.id } });
-                console.log(token);
-            } else {
-            // create token
-            const token = await Token.create(data);
-            console.log(token);
-            }
+            // update token // create token
+            token ? await Token.update(data, { where: { userId: user.id } }) : await Token.create(data);
+
 
             return res.status(200).json({ user, token: { accessToken, refreshToken: refreshTokenNew } });
         }
@@ -111,26 +108,29 @@ const userLogin = async (req, res) => {
 
 // 4. update user
 const updateUser = async (req, res) => {
+    const id = req.body.id;
 
-    let id = req.body.id;
     const user = await User.update(req.body, { where: { id } });
+
     res.status(200).send(user);
 };
 
 // 6. delete user
 const deleteUser = async (req, res) => {
-    let id = req.body.id;
+    const id = req.body.id;
+
     await User.destroy({ where: { id } });
+
     res.status(200).send('User deleted!');
 };
 
 // 7. logout user
 const logoutUser = async (req, res) => {
     const userId = req.body.userId;
-    // const user = await User.findOne({ where: { userId } });
+
     await Token.destroy({ where: { userId } });
+
     res.status(200).send('Logged out!');
-    // res.status(200).send('User logged out!');
 };
 
 module.exports = {
