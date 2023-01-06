@@ -1,5 +1,7 @@
+require('dotenv').config
 const db = require('./../models');
-const jwt = require('jsonwebtoken')
+const { jwt } = require('jsonwebtoken');
+const env = require('../config/env.js');
 
 // create main Model
 const User = db.users;
@@ -34,7 +36,12 @@ const userLogin = async (req, res) => {
 
     const username = req.body.username;
     const password = req.body.password;
-    let user = await User.findOne({ where: { username, password } });
+    const user = { name: username };
+
+    const accessToken = jwt.sign(user, env.ACCESS_TOKEN_SECRET);
+    res.json({ accessToken });
+
+    // let user = await User.findOne({ where: { username, password } });
     res.status(200).send(user);
 };
 
