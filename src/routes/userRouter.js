@@ -20,7 +20,7 @@ function authenticateToken(req, res, next) {
         return res.sendStatus(401);
     }
 
-    jwt.verify(token, env.ACCESS_TOKEN_SECRET, {},(err, user) => {
+    jwt.verify(token, env.ACCESS_TOKEN_SECRET, {}, (err, user) => {
         if (err) {
             return res.sendStatus(403);
         }
@@ -29,4 +29,12 @@ function authenticateToken(req, res, next) {
     });
 }
 
-module.exports = userRouter;
+// Authenticate User
+
+function generateAccessToken(user) {
+    return jwt.sign(user, env.ACCESS_TOKEN_SECRET, { expiresIn: '15s' }, () => '');
+}
+
+module.exports = {
+    userRouter, generateAccessToken
+};

@@ -1,6 +1,8 @@
 const db = require('./../models');
 const jwt = require('jsonwebtoken');
 const env = require('../config/env.js');
+const generateAccessToken = require('../routes/userRouter'
+ );
 
 // create main Model
 const User = db.users;

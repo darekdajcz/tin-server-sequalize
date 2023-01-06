@@ -1,5 +1,5 @@
 {
-  "name": "tin-server-equalize",
+  "name": "tin-server-sequalize",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",

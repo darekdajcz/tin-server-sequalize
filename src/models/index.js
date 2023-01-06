@@ -1,5 +1,4 @@
 const dbConfig = require('../config/dbConfig.js');
-
 const { Sequelize, DataTypes } = require('sequelize');
 
 const sequelize = new Sequelize(
@@ -20,12 +19,8 @@ const sequelize = new Sequelize(
 );
 
 sequelize.authenticate()
-    .then(() => {
-        console.log('connected..');
-    })
-    .catch(err => {
-        console.log('Error' + err);
-    });
+    .then(() => console.log('Connected..'))
+    .catch(err => console.log('Error' + err));
 
 const db = {};
 
