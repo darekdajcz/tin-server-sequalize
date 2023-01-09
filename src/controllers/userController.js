@@ -73,10 +73,40 @@ const getAllUsers = async (req, res) => {
     res.status(200).send(users);
 };
 
+// 2.5 get  users
+const getUser = async (req, res) => {
+    try {
+        // Authenticate User
+        const { username, password } = req.body;
+
+        if (!(username && password)) {
+            return res.status(400).send({ message: 'redirect to login section' });
+        }
+
+        const user = await User.findOne({ where: { username } });
+
+        if (user && await bcrypt.compare(password, user.password)) {
+            const accessToken = auth.generateAccessToken(user);
+            const refreshTokenNew = auth.generateRefreshToken(user);
+            const data = { userId: user.id, accessToken, refreshToken: refreshTokenNew };
+            const token = await Token.findOne({ where: { userId: user.id } });
+
+            // update token // create token
+            token ? await Token.update(data, { where: { userId: user.id } }) : await Token.create(data);
+
+
+            return res.status(200).json({ user, token: { accessToken, refreshToken: refreshTokenNew } });
+        }
+
+        res.status(400).send('Invalid Credentials');
+
+    } catch (err) {
+        console.log(err);
+    }
+};
+
 // 3. get single user
 const userLogin = async (req, res) => {
-    console.log('xx');
-    console.log(req);
     try {
         // Authenticate User
         const { username, password } = req.body;
@@ -118,7 +148,7 @@ const updateUser = async (req, res) => {
 
 // 6. delete user
 const deleteUser = async (req, res) => {
-    const id = req.body.id;
+    const id = req.params.id;
 
     await User.destroy({ where: { id } });
 
@@ -135,5 +165,5 @@ const logoutUser = async (req, res) => {
 };
 
 module.exports = {
-    refreshToken, registerUser, getAllUsers, userLogin, updateUser, deleteUser, logoutUser
+    refreshToken, registerUser, getAllUsers, userLogin, updateUser, deleteUser, logoutUser, getUser
 };

@@ -24,5 +24,8 @@ app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 app.get('/', (req, res) => res.json({ message: 'API works!' }));
 
 // routers
-const router = require('./src/routes/userRouter.js');
-app.use('/api/user', router);
+const userRouter = require('./src/routes/userRouter.js');
+app.use('/api/user', userRouter);
+
+const clientRouter = require('./src/routes/clientRouter.js');
+app.use('/api/client', clientRouter);
