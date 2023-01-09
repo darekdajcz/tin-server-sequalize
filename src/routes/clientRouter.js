@@ -3,7 +3,7 @@ const clientRouter = require('express').Router();
 const auth = require('./../auth/auth.js');
 
 clientRouter.post('/create', auth.authenticateToken, userController.addClient);
-clientRouter.get('/all', auth.authenticateToken, userController.getAllClients);
+clientRouter.get('/all', userController.getAllClients);
 clientRouter.get('/:id', auth.authenticateToken, userController.getClient);
 clientRouter.put('/update', auth.authenticateToken, userController.updateClient);
 clientRouter.delete('/:id', auth.authenticateToken, userController.deleteClient);

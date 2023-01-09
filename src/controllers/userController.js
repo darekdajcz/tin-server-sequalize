@@ -73,7 +73,7 @@ const getAllUsers = async (req, res) => {
     res.status(200).send(users);
 };
 
-// 2.5 get  users
+// 2.5 get  user
 const getUser = async (req, res) => {
     try {
         // Authenticate User

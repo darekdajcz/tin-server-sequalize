@@ -24,8 +24,7 @@ const addClient = async (req, res) => {
 // 2. get all users
 const getAllClients = async (req, res) => {
 
-    const clients = await Client.findAll({
-        attributes: ['id', 'pesel', 'first_name', 'surname', 'address', 'can_get_loan']
+    const clients = await Clients.findAll({
     });
 
     res.status(200).send(clients);
@@ -39,13 +38,13 @@ const getClient = async (req, res) => {
         if (!(pesel && first_name && surname && address)) {
             return res.status(400).send('Inputs required');
         }
-        const peselOld = await Client.findOne({ where: { pesel } });
+        const peselOld = await Clients.findOne({ where: { pesel } });
 
         if (peselOld) {
             return res.status(409).send('Pesel Already Exist');
         }
 
-        const client = await Client.findOne({ where: { id } });
+        const client = await Clients.findOne({ where: { id } });
 
         if (client) {
             return res.status(200).json({ client });
@@ -62,7 +61,7 @@ const getClient = async (req, res) => {
 const updateClient = async (req, res) => {
     const id = req.body.id;
 
-    const user = await Client.update(req.body, { where: { id } });
+    const user = await Clients.update(req.body, { where: { id } });
 
     res.status(200).send(user);
 };
@@ -71,7 +70,7 @@ const updateClient = async (req, res) => {
 const deleteClient = async (req, res) => {
     const id = req.body.id;
 
-    await Client.destroy({ where: { id } });
+    await Clients.destroy({ where: { id } });
 
     res.status(200).send('Client deleted!');
 };
