@@ -9,7 +9,7 @@ const addBank = async (req, res) => {
     try {
         const { name, address } = req.body;
 
-        const data = {  name, address };
+        const data = { name, address };
 
         // Create bank in our database
         await Bank.create(data);
@@ -25,7 +25,7 @@ const addBank = async (req, res) => {
 const getAllBanks = async (req, res) => {
 
     const banks = await Bank.findAll({
-        attributes: ['name', 'address']
+        attributes: ['id', 'name', 'address']
     });
 
     res.status(200).send(banks);
