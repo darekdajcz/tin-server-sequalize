@@ -25,7 +25,7 @@ const addAccount = async (req, res) => {
 const getAllAccounts = async (req, res) => {
 
     const accounts = await Account.findAll({
-        attributes: ['account_number', 'creation_date', 'bonuses', 'client_id', 'bank_id']
+        attributes: ['id', 'account_number', 'creation_date', 'bonuses', 'client_id', 'bank_id']
     });
 
     res.status(200).send(accounts);

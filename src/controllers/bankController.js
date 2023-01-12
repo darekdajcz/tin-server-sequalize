@@ -1,17 +1,17 @@
 const db = require('./../models');
 
-// create Account Model
-const Bank = db.accounts;
+// create Bank Model
+const Bank = db.banks;
 
 // 1. add Bank
 const addBank = async (req, res) => {
     console.log(req.body);
     try {
-        const { account_number, creation_date, bonuses, client_id, bank_id } = req.body;
+        const { name, address } = req.body;
 
-        const data = { account_number, creation_date, bonuses, client_id, bank_id };
+        const data = {  name, address };
 
-        // Create account in our database
+        // Create bank in our database
         await Bank.create(data);
 
         res.status(201).json({ created: true });
@@ -21,28 +21,28 @@ const addBank = async (req, res) => {
     }
 };
 
-// 2. get all accounts
+// 2. get all banks
 const getAllBanks = async (req, res) => {
 
-    const accounts = await Bank.findAll({
-        attributes: ['account_number', 'creation_date', 'bonuses', 'client_id', 'bank_id']
+    const banks = await Bank.findAll({
+        attributes: ['name', 'address']
     });
 
-    res.status(200).send(accounts);
+    res.status(200).send(banks);
 };
 
-// 3. get single account
+// 3. get single bank
 const getBank = async (req, res) => {
     try {
         const id = req.params.id;
 
-        const account = await Bank.findOne({ where: { id } });
+        const bank = await Bank.findOne({ where: { id } });
 
-        if (account) {
-            return res.status(200).json({ account });
+        if (bank) {
+            return res.status(200).json({ bank });
         }
 
-        res.status(400).send(`Not Found Bank by id: ${account_id}`);
+        res.status(400).send(`Not Found Bank by id: ${bank_id}`);
 
     } catch (err) {
         console.log(err);
