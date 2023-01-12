@@ -1,7 +1,7 @@
 const db = require('./../models');
 
 // create Client Model
-const Clients = db.clients;
+const Client = db.clients;
 
 // 1. add Client
 const addClient = async (req, res) => {
@@ -12,7 +12,7 @@ const addClient = async (req, res) => {
         const data = { pesel, first_name, surname, address, can_get_loan };
 
         // Create client in our database
-        await Clients.create(data);
+        await Client.create(data);
 
         res.status(201).json({ created: true });
 
@@ -24,7 +24,9 @@ const addClient = async (req, res) => {
 // 2. get all users
 const getAllClients = async (req, res) => {
 
-    const clients = await Clients.findAll({
+    const clients = await Client.findAll({
+        attributes: ['id', 'pesel', 'first_name', 'surname', 'address', 'can_get_loan']
+
     });
 
     res.status(200).send(clients);
@@ -33,18 +35,9 @@ const getAllClients = async (req, res) => {
 // 3. get single user
 const getClient = async (req, res) => {
     try {
-        const { id } = req.body;
+        const id = req.params.id;
 
-        if (!(pesel && first_name && surname && address)) {
-            return res.status(400).send('Inputs required');
-        }
-        const peselOld = await Clients.findOne({ where: { pesel } });
-
-        if (peselOld) {
-            return res.status(409).send('Pesel Already Exist');
-        }
-
-        const client = await Clients.findOne({ where: { id } });
+        const client = await Client.findOne({ where: { id } });
 
         if (client) {
             return res.status(200).json({ client });
@@ -61,18 +54,19 @@ const getClient = async (req, res) => {
 const updateClient = async (req, res) => {
     const id = req.body.id;
 
-    const user = await Clients.update(req.body, { where: { id } });
+    const client = await Client.update(req.body, { where: { id } });
 
-    res.status(200).send(user);
+    res.status(201).json({ updated: true });
+
 };
 
 // 6. delete Client
 const deleteClient = async (req, res) => {
-    const id = req.body.id;
+    const id = req.params.id;
 
-    await Clients.destroy({ where: { id } });
+    await Client.destroy({ where: { id } });
 
-    res.status(200).send('Client deleted!');
+    res.status(201).json({ deleted: true });
 };
 
 

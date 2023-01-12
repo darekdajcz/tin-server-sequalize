@@ -3,7 +3,7 @@ const env = require('../config/env');
 
 function generateAccessToken(user) {
     return jwt.sign(user.toJSON(), env.ACCESS_TOKEN_SECRET, {
-        expiresIn: '900s'
+        expiresIn: '1900s'
     }, null);
 }
 

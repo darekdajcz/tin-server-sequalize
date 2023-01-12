@@ -3,10 +3,6 @@ module.exports = (sequelize, DataTypes) => {
 
     // return Client
     return sequelize.define('accountX', {
-        account_id: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
         account_number: {
             type: DataTypes.STRING,
             allowNull: false,
