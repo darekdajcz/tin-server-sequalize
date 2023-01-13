@@ -2,6 +2,8 @@ const db = require('./../models');
 
 // create Account Model
 const Account = db.accounts;
+const Bank = db.banks;
+const Client = db.clients;
 
 // 1. add Account
 const addAccount = async (req, res) => {
@@ -24,9 +26,11 @@ const addAccount = async (req, res) => {
 // 2. get all accounts
 const getAllAccounts = async (req, res) => {
 
-    const accounts = await Account.findAll({
-        attributes: ['id', 'account_number', 'creation_date', 'bonuses', 'client_id', 'bank_id']
-    });
+
+    Account.belongsTo(Bank, { foreignKey: 'bank_id' });
+    Account.belongsTo(Client, { foreignKey: 'client_id' });
+
+    const accounts = await Account.findAll({ include: [Bank, Client] });
 
     res.status(200).send(accounts);
 };
@@ -34,9 +38,14 @@ const getAllAccounts = async (req, res) => {
 // 3. get single account
 const getAccount = async (req, res) => {
     try {
+        Account.belongsTo(Bank, { foreignKey: 'bank_id' });
+        Account.belongsTo(Client, { foreignKey: 'client_id' });
         const id = req.params.id;
 
-        const account = await Account.findOne({ where: { id } });
+        const account = await Account.findOne({
+            where: { id },
+            include: [Bank, Client]
+        });
 
         if (account) {
             return res.status(200).json({ account });
