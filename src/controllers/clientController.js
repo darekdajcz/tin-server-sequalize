@@ -14,7 +14,12 @@ const addClient = async (req, res) => {
         // Create client in our database
         await Client.create(data);
 
-        res.status(201).json({ created: true });
+        res.status(201).json({
+            created: true,
+            messages: [
+                { messageCode: 'client.created', messagesType: 'INFO' }
+            ]
+        });
 
     } catch (err) {
         console.log(err);
@@ -56,7 +61,12 @@ const updateClient = async (req, res) => {
 
     const client = await Client.update(req.body, { where: { id } });
 
-    res.status(201).json({ updated: true });
+    res.status(201).json({
+        updated: true,
+        messages: [
+            { messageCode: 'client.updated', messagesType: 'INFO' }
+        ]
+    });
 
 };
 
@@ -66,7 +76,12 @@ const deleteClient = async (req, res) => {
 
     await Client.destroy({ where: { id } });
 
-    res.status(201).json({ deleted: true });
+    res.status(201).json({
+        deleted: true,
+        messages: [
+            { messageCode: 'client.deleted', messagesType: 'ERROR' }
+        ]
+    });
 };
 
 

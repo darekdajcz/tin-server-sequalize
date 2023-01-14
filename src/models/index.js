@@ -32,6 +32,7 @@ db.banks = require('./bankModel.js')(sequelize, DataTypes);
 db.accounts = require('./accountModel.js')(sequelize, DataTypes);
 db.clients = require('./clientModel.js')(sequelize, DataTypes);
 db.users = require('./userModel.js')(sequelize, DataTypes);
+db.usersTmp = require('./userTmpModel.js')(sequelize, DataTypes);
 db.tokens = require('./userStoreTokens.js')(sequelize, DataTypes);
 
 

@@ -3,7 +3,8 @@ const userRouter = require('express').Router();
 const auth = require('./../auth/auth.js');
 
 // register
-userRouter.post('/register', auth.authenticateToken, userController.registerUser);
+userRouter.post('/register-tmp', userController.registerUserTmp);
+// userRouter.post('/register', auth.authenticateToken, userController.registerUser);
 // login
 userRouter.post('/login', userController.userLogin);
 userRouter.get('/all-users', userController.getAllUsers);

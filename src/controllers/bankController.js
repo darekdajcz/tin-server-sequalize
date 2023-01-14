@@ -14,7 +14,12 @@ const addBank = async (req, res) => {
         // Create bank in our database
         await Bank.create(data);
 
-        res.status(201).json({ created: true });
+        res.status(201).json({
+            created: true,
+            messages: [
+                { messageCode: 'bank.created', messagesType: 'INFO' }
+            ]
+        });
 
     } catch (err) {
         console.log(err);
@@ -55,7 +60,12 @@ const updateBank = async (req, res) => {
 
     await Bank.update(req.body, { where: { id } });
 
-    res.status(201).json({ updated: true });
+    res.status(201).json({
+        updated: true,
+        messages: [
+            { messageCode: 'bank.updated', messagesType: 'INFO' }
+        ]
+    });
 
 };
 
@@ -65,7 +75,12 @@ const deleteBank = async (req, res) => {
 
     await Bank.destroy({ where: { id } });
 
-    res.status(201).json({ deleted: true });
+    res.status(201).json({
+        deleted: true,
+        messages: [
+            { messageCode: 'bank.deleted', messagesType: 'ERROR' }
+        ]
+    });
 };
 
 

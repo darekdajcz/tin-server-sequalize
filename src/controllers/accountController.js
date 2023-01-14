@@ -16,7 +16,12 @@ const addAccount = async (req, res) => {
         // Create account in our database
         await Account.create(data);
 
-        res.status(201).json({ created: true });
+        res.status(201).json({
+            created: true,
+            messages: [
+                { messageCode: 'account.created', messagesType: 'INFO' }
+            ]
+        });
 
     } catch (err) {
         console.log(err);
@@ -25,7 +30,6 @@ const addAccount = async (req, res) => {
 
 // 2. get all accounts
 const getAllAccounts = async (req, res) => {
-
 
     Account.belongsTo(Bank, { foreignKey: 'bank_id' });
     Account.belongsTo(Client, { foreignKey: 'client_id' });
@@ -64,7 +68,12 @@ const updateAccount = async (req, res) => {
 
     await Account.update(req.body, { where: { id } });
 
-    res.status(201).json({ updated: true });
+    res.status(201).json({
+        updated: true,
+        messages: [
+            { messageCode: 'account.updated', messagesType: 'INFO' }
+        ]
+    });
 
 };
 
@@ -74,7 +83,12 @@ const deleteAccount = async (req, res) => {
 
     await Account.destroy({ where: { id } });
 
-    res.status(201).json({ deleted: true });
+    res.status(201).json({
+        deleted: true,
+        messages: [
+            { messageCode: 'account.deleted', messagesType: 'ERROR' }
+        ]
+    });
 };
 
 

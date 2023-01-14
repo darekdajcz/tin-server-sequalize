@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 
 // create main Model
 const User = db.users;
+const UserTmp = db.usersTmp;
 const Token = db.tokens;
 
 //main work
@@ -27,6 +28,44 @@ const refreshToken = async (req, res) => {
 };
 
 // 1. register User
+const registerUserTmp = async (req, res) => {
+    try {
+        const { username, email, password, role } = req.body;
+
+        // Validate user input
+        if (!(email && password && username && role)) {
+            return res.status(400).send('All input is required');
+        }
+
+        // check if user already exist
+        // Validate if user exist in our database
+        const emailOldUser = await UserTmp.findOne({ where: { email } });
+        const usernameOldUser = await UserTmp.findOne({ where: { username } });
+
+        if (emailOldUser || usernameOldUser) {
+            return res.status(409).send('User Already Exist. Please Login');
+        }
+
+        //Encrypt user password
+        let encryptedPassword = await bcrypt.hash(password, 10);
+        const data = { username, email, password: encryptedPassword, role };
+
+        // Create user in our database
+        const user = await UserTmp.create(data);
+        // Create token && save user token
+        const accessToken = auth.generateAccessToken(user);
+        const refreshTokenNew = auth.generateRefreshToken(user);
+
+        // return new user
+        res.status(201).json({ user, token: { accessToken, refreshToken: refreshTokenNew } });
+
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+
+// 1.5 register User by Admin
 const registerUser = async (req, res) => {
     try {
         const { username, email, password, role } = req.body;
@@ -67,6 +106,16 @@ const registerUser = async (req, res) => {
 const getAllUsers = async (req, res) => {
 
     const users = await User.findAll({
+        attributes: ['id', 'username', 'email', 'role']
+    });
+
+    res.status(200).send(users);
+};
+
+// 2.3 get all Tmp users
+const getAllTmpUsers = async (req, res) => {
+
+    const users = await UserTmp.findAll({
         attributes: ['id', 'username', 'email', 'role']
     });
 
@@ -165,5 +214,5 @@ const logoutUser = async (req, res) => {
 };
 
 module.exports = {
-    refreshToken, registerUser, getAllUsers, userLogin, updateUser, deleteUser, logoutUser, getUser
+    refreshToken, registerUserTmp, getAllUsers, userLogin, updateUser, deleteUser, logoutUser, getUser
 };
