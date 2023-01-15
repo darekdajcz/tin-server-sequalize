@@ -79,7 +79,7 @@ const registerUserTmp = async (req, res) => {
 // 1.5 register User by Admin
 const registerUser = async (req, res) => {
     try {
-        const { username, email, password, role } = req.body;
+        const { username, email, password, role, approved } = req.body;
 
         // Validate user input
         if (!(email && password && username && role)) {
@@ -97,7 +97,7 @@ const registerUser = async (req, res) => {
 
         //Encrypt user password
         let encryptedPassword = await bcrypt.hash(password, 10);
-        const data = { username, email, password: encryptedPassword, role };
+        const data = { username, email, password: encryptedPassword, role, approved };
 
         // Create user in our database
         const user = await User.create(data);
@@ -128,9 +128,11 @@ const registerUser = async (req, res) => {
 // 2. get all users
 const getAllUsers = async (req, res) => {
 
-    const users = await User.findAll({
-        attributes: ['id', 'username', 'email', 'role']
+    let users = await User.findAll({
+        attributes: ['id', 'username', 'email', 'role', 'approved'],
+        where: { approved: '0' }
     });
+
 
     res.status(200).send(users);
 };
@@ -167,7 +169,17 @@ const getUser = async (req, res) => {
             token ? await Token.update(data, { where: { userId: user.id } }) : await Token.create(data);
 
 
-            return res.status(200).json({ user, token: { accessToken, refreshToken: refreshTokenNew } });
+            if (user.approved === '1') {
+                return res.status(200).json({ user, token: { accessToken, refreshToken: refreshTokenNew } });
+            }
+            return res.status(200).json({
+                messages: [
+                    {
+                        messageCode: 'not-approved',
+                        messagesType: 'ERROR'
+                    }
+                ]
+            });
         }
 
         res.status(400).send('Invalid Credentials');
@@ -210,8 +222,17 @@ const userLogin = async (req, res) => {
             // update token // create token
             token ? await Token.update(data, { where: { userId: user.id } }) : await Token.create(data);
 
-
-            return res.status(200).json({ user, token: { accessToken, refreshToken: refreshTokenNew } });
+            if (user.approved === '1') {
+                return res.status(200).json({ user, token: { accessToken, refreshToken: refreshTokenNew } });
+            }
+            return res.status(200).json({
+                messages: [
+                    {
+                        messageCode: 'not-approved',
+                        messagesType: 'ERROR'
+                    }
+                ]
+            });
         }
 
 
@@ -225,8 +246,6 @@ const userLogin = async (req, res) => {
         });
 
     } catch (err) {
-        console.log('suuii');
-
         console.log(err);
     }
 };
