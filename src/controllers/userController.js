@@ -57,7 +57,18 @@ const registerUserTmp = async (req, res) => {
         const refreshTokenNew = auth.generateRefreshToken(user);
 
         // return new user
-        res.status(201).json({ user, token: { accessToken, refreshToken: refreshTokenNew } });
+        res.status(201).send({
+            user,
+            token: {
+                accessToken, refreshToken: refreshTokenNew
+            }, registeredTmp: true,
+            messages: [
+                {
+                    messageCode: 'registeredTmp',
+                    messagesType: 'INFO'
+                }
+            ]
+        });
 
     } catch (err) {
         console.log(err);
@@ -95,7 +106,19 @@ const registerUser = async (req, res) => {
         const refreshTokenNew = auth.generateRefreshToken(user);
 
         // return new user
-        res.status(201).json({ user, token: { accessToken, refreshToken: refreshTokenNew } });
+        res.status(201).send({
+            user,
+            token: {
+                accessToken, refreshToken: refreshTokenNew
+            },
+            registeredByAdmin: true,
+            messages: [
+                {
+                    messageCode: 'registeredByAdmin',
+                    messagesType: 'INFO'
+                }
+            ]
+        });
 
     } catch (err) {
         console.log(err);
@@ -116,7 +139,7 @@ const getAllUsers = async (req, res) => {
 const getAllTmpUsers = async (req, res) => {
 
     const users = await UserTmp.findAll({
-        attributes: ['id', 'username', 'email', 'role']
+        attributes: ['id', 'username', 'password', 'email', 'role']
     });
 
     res.status(200).send(users);
@@ -166,6 +189,18 @@ const userLogin = async (req, res) => {
 
         const user = await User.findOne({ where: { username } });
 
+        if (!user) {
+            return res.status(200).send({
+                messages: [
+                    {
+                        messageCode: 'unauthorized',
+                        messagesType: 'ERROR'
+                    }
+                ]
+            });
+        }
+
+
         if (user && await bcrypt.compare(password, user.password)) {
             const accessToken = auth.generateAccessToken(user);
             const refreshTokenNew = auth.generateRefreshToken(user);
@@ -179,9 +214,19 @@ const userLogin = async (req, res) => {
             return res.status(200).json({ user, token: { accessToken, refreshToken: refreshTokenNew } });
         }
 
-        res.status(400).send('Invalid Credentials');
+
+        return res.status(200).send({
+            messages: [
+                {
+                    messageCode: 'wrongPassword',
+                    messagesType: 'ERROR'
+                }
+            ]
+        });
 
     } catch (err) {
+        console.log('suuii');
+
         console.log(err);
     }
 };
@@ -196,10 +241,10 @@ const updateUser = async (req, res) => {
 };
 
 // 6. delete user
-const deleteUser = async (req, res) => {
+const deleteTmpUser = async (req, res) => {
     const id = req.params.id;
 
-    await User.destroy({ where: { id } });
+    await UserTmp.destroy({ where: { id } });
 
     res.status(200).send('User deleted!');
 };
@@ -214,5 +259,14 @@ const logoutUser = async (req, res) => {
 };
 
 module.exports = {
-    refreshToken, registerUserTmp, getAllUsers, userLogin, updateUser, deleteUser, logoutUser, getUser
+    refreshToken,
+    registerUser,
+    registerUserTmp,
+    getAllUsers,
+    getAllTmpUsers,
+    userLogin,
+    updateUser,
+    deleteTmpUser,
+    logoutUser,
+    getUser
 };
